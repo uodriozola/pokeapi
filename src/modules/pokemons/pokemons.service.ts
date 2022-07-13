@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
+import { PokemonClient } from 'pokenode-ts';
 
 @Injectable()
 export class PokemonsService {
@@ -9,7 +10,8 @@ export class PokemonsService {
   }
 
   findAll() {
-    return `This action returns all pokemons`;
+    const api = new PokemonClient();
+    return api.listPokemons();
   }
 
   findOne(id: number) {
