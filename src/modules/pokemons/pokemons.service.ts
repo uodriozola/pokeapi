@@ -4,7 +4,6 @@ import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { PokemonClient } from 'pokenode-ts';
 import { QueryPokemonDto } from './dto/query-pokemon.dto';
 import { forkJoin, from, map, Observable, switchMap } from 'rxjs';
-import { Pokemon } from './entities/pokemon.entity';
 import { PokemonDto } from './dto/pokemon.dto';
 
 @Injectable()
@@ -13,12 +12,14 @@ export class PokemonsService {
     return 'This action adds a new pokemon';
   }
 
-  findAll(query: QueryPokemonDto) {
+  findAll(query: QueryPokemonDto): Observable<PokemonDto[]> {
     console.log('query', query);
-    const api = new PokemonClient();
+    const cache = 1000 * 60 * 60;
+    const api = new PokemonClient({ cacheOptions: { maxAge: cache } });
     return from(api.listPokemons(query.offset, query.limit)).pipe(
       switchMap((pokemonList) => {
-        const detailsListObservables: Observable<Pokemon>[] = [];
+        const detailsListObservables: Observable<PokemonDto>[] = [];
+
         for (const pokemon of pokemonList.results) {
           detailsListObservables.push(
             from(api.getPokemonByName(pokemon.name)).pipe(
@@ -26,7 +27,6 @@ export class PokemonsService {
             ),
           );
         }
-
         return forkJoin(detailsListObservables);
       }),
     );
