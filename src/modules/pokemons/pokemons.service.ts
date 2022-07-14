@@ -16,7 +16,7 @@ export class PokemonsService {
     console.log('query', query);
     const cache = 1000 * 60 * 60;
     const api = new PokemonClient({ cacheOptions: { maxAge: cache } });
-    return from(api.listPokemons(query.offset, query.limit)).pipe(
+    return from(api.listPokemons(query.offset * query.limit, query.limit)).pipe(
       switchMap((pokemonList) => {
         const detailsListObservables: Observable<PokemonDto>[] = [];
 

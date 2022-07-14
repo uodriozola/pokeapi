@@ -13,9 +13,9 @@ export class QueryPokemonDto {
   offset = 0;
 
   @Transform(({ value }) =>
-    toNumber(value, { default: 10, min: 21, max: maxPokemonNumber }),
+    toNumber(value, { default: 10, min: 10, max: maxPokemonNumber }),
   )
   @IsInt()
   @IsOptional()
-  limit = 18;
+  limit = 10;
 }
